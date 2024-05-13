@@ -1,0 +1,26 @@
+body {
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+
+#life-container {
+  display: flex;
+
+  .life {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+#xp-container {
+  width: 80%;
+  height: 50px;
+  background-color: #f0f0f0;
+  border: 1px solid #000;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 25px;
+}
