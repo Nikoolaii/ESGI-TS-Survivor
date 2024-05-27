@@ -72,30 +72,36 @@ export class MovementController {
 
   moveProjectile(projectile: Projectile, direction: string) {
     const move = () => {
-      this.detectEnemyCollision(projectile);
+        setTimeout(() => {
+            this.detectEnemyCollision(projectile);
+        }, 200);
       if (direction === 'ArrowUp') {
         if (parseInt(projectile.canvas.style.top, 10) <= 0) {
-          document.body.removeChild(projectile.canvas);
+          projectile.canvas.remove();
+          projectile = null;
           return;
         }
         projectile.canvas.style.top = `${parseInt(projectile.canvas.style.top, 10) - projectile.speed}px`;
       } else if (direction === 'ArrowDown') {
         if (parseInt(projectile.canvas.style.top, 10) >= window.innerHeight - projectile.canvas.height - 60) {
-          document.body.removeChild(projectile.canvas);
+          projectile.canvas.remove();
+          projectile = null;
           return;
         }
         projectile.canvas.style.rotate = '180deg';
         projectile.canvas.style.top = `${parseInt(projectile.canvas.style.top, 10) + projectile.speed}px`;
       } else if (direction === 'ArrowLeft') {
         if (parseInt(projectile.canvas.style.left, 10) <= 0) {
-          document.body.removeChild(projectile.canvas);
+          projectile.canvas.remove();
+          projectile = null;
           return;
         }
         projectile.canvas.style.rotate = '-90deg';
         projectile.canvas.style.left = `${parseInt(projectile.canvas.style.left, 10) - projectile.speed}px`;
       } else if (direction === 'ArrowRight') {
         if (parseInt(projectile.canvas.style.left, 10) >= window.innerWidth - projectile.canvas.getBoundingClientRect().width) {
-          document.body.removeChild(projectile.canvas);
+          projectile.canvas.remove();
+          projectile = null;
           return;
         }
         projectile.canvas.style.rotate = '90deg';
@@ -109,14 +115,19 @@ export class MovementController {
 
 
   detectEnemyCollision(projectile: Projectile) {
-    let enemies = document.getElementsByClassName('enemy');
+    if (!document.body.contains(projectile.canvas)) {
+      return;
+    }
+
+    let enemies = document.getElementsByClassName('enemy') as HTMLCollectionOf<HTMLElement>;
     let enemiesArray = Array.from(enemies);
     let projectileTop = parseInt(projectile.canvas.style.top, 10);
     let projectileLeft = parseInt(projectile.canvas.style.left, 10);
     let projectileWidth = projectile.canvas.width;
     let projectileHeight = projectile.canvas.height;
 
-    enemiesArray.forEach((enemy) => {
+    for (let i = 0; i < enemiesArray.length; i++) {
+      let enemy = enemiesArray[i];
       let enemyTop = parseInt(enemy.style.top, 10);
       let enemyLeft = parseInt(enemy.style.left, 10);
       let enemyWidth = enemy.getBoundingClientRect().width;
@@ -127,9 +138,16 @@ export class MovementController {
           projectileLeft < enemyLeft + enemyWidth &&
           projectileLeft + projectileWidth > enemyLeft) {
         this.game.score += 1;
-        document.body.removeChild(enemy);
-        document.body.removeChild(projectile.canvas);
+        if(document.body.contains(enemy)){
+          document.body.removeChild(enemy);
+          enemy = null;
+        }
+        if(document.body.contains(projectile.canvas)){
+          document.body.removeChild(projectile.canvas);
+          projectile = null;
+        }
+        break;
       }
-    })
+    }
   }
 }
