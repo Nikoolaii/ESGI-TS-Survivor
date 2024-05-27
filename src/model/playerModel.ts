@@ -1,17 +1,19 @@
 import { Animation } from "./animationModel";
+import { Projectile} from "./projectileModel";
 
 export class Player {
-    life: number;
     experience: number;
     level: number;
     sprite: string;
     animation: Animation;
     expArray: number[] = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50];
-    speed: number = 5;
+    speed: number = 2;
+    shootSpeed: number = 1;
+    life: number = 3;
     canvas: HTMLCanvasElement;
+    direction: string = 'ArrowRight';
 
-    constructor(life: number, experience: number, level: number, sprite: string) {
-        this.life = life;
+    constructor(experience: number, level: number, sprite: string) {
         this.experience = experience;
         this.level = level;
         this.sprite = sprite;
@@ -29,7 +31,7 @@ export class Player {
         this.canvas.style.width = '64px';
         this.canvas.style.height = '64px';
 
-        this.animation = new Animation(sprite, this.canvas);
+        this.animation = new Animation(sprite, this.canvas, 32, 32);
     }
 
     levelUp() {

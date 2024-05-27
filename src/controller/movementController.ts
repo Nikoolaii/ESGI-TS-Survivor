@@ -1,11 +1,18 @@
+import {Projectile} from "../model/projectileModel";
+import {Player} from "../model/playerModel";
+import {Game} from "../model/gameModel";
+
 export class MovementController {
 
   key:Array<String> = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-  element: HTMLCanvasElement;
-  speed: number = 5; // You can adjust this value to control the speed of the movement
+  element: Player;
+  speed: number ; // You can adjust this value to control the speed of the movement
+  game: Game;
 
-  constructor(element: HTMLCanvasElement) {
+  constructor(element: Player, game: Game) {
     this.element = element;
+    this.speed = element.speed;
+    this.game = game;
   }
 
   movePlayer() {
@@ -13,15 +20,36 @@ export class MovementController {
 
     const move = () => {
       if (direction === 'ArrowUp') {
-        this.element.style.top = `${parseInt(this.element.style.top, 10) - this.speed}px`;
+        if (parseInt(this.element.canvas.style.top, 10) <= 0) {
+          this.element.canvas.style.top = '0px';
+        } else {
+          this.element.canvas.style.top = `${parseInt(this.element.canvas.style.top, 10) - this.speed}px`;
+          this.element.direction = direction;
+        }
       } else if (direction === 'ArrowDown') {
-        this.element.style.top = `${parseInt(this.element.style.top, 10) + this.speed}px`;
+        if (parseInt(this.element.canvas.style.top, 10) >= window.innerHeight - this.element.canvas.height) {
+          this.element.canvas.style.top = `${window.innerHeight - this.element.canvas.height}px`;
+        } else {
+          this.element.canvas.style.top = `${parseInt(this.element.canvas.style.top, 10) + this.speed}px`;
+          this.element.direction = direction;
+        }
       } else if (direction === 'ArrowLeft') {
-        this.element.style.left = `${parseInt(this.element.style.left, 10) - this.speed}px`;
-        this.element.style.transform = 'scaleX(-1)';
+        if (parseInt(this.element.canvas.style.left, 10) <= 0) {
+          this.element.canvas.style.left = '0px';
+        } else {
+          this.element.canvas.style.left = `${parseInt(this.element.canvas.style.left, 10) - this.speed}px`;
+          this.element.canvas.style.transform = 'scaleX(-1)';
+          this.element.direction = direction;
+        }
       } else if (direction === 'ArrowRight') {
-        this.element.style.left = `${parseInt(this.element.style.left, 10) + this.speed}px`;
-        this.element.style.transform = 'scaleX(1)';
+
+        if (parseInt(this.element.canvas.style.left, 10) >= window.innerWidth - this.element.canvas.width) {
+          this.element.canvas.style.left = `${window.innerWidth - this.element.canvas.width}px`;
+        } else {
+          this.element.canvas.style.left = `${parseInt(this.element.canvas.style.left, 10) + this.speed}px`;
+          this.element.canvas.style.transform = 'scaleX(1)';
+          this.element.direction = direction;
+        }
       }
 
       requestAnimationFrame(move);
@@ -40,5 +68,68 @@ export class MovementController {
     })
 
     move();
+  }
+
+  moveProjectile(projectile: Projectile, direction: string) {
+    const move = () => {
+      this.detectEnemyCollision(projectile);
+      if (direction === 'ArrowUp') {
+        if (parseInt(projectile.canvas.style.top, 10) <= 0) {
+          document.body.removeChild(projectile.canvas);
+          return;
+        }
+        projectile.canvas.style.top = `${parseInt(projectile.canvas.style.top, 10) - projectile.speed}px`;
+      } else if (direction === 'ArrowDown') {
+        if (parseInt(projectile.canvas.style.top, 10) >= window.innerHeight - projectile.canvas.height - 60) {
+          document.body.removeChild(projectile.canvas);
+          return;
+        }
+        projectile.canvas.style.rotate = '180deg';
+        projectile.canvas.style.top = `${parseInt(projectile.canvas.style.top, 10) + projectile.speed}px`;
+      } else if (direction === 'ArrowLeft') {
+        if (parseInt(projectile.canvas.style.left, 10) <= 0) {
+          document.body.removeChild(projectile.canvas);
+          return;
+        }
+        projectile.canvas.style.rotate = '-90deg';
+        projectile.canvas.style.left = `${parseInt(projectile.canvas.style.left, 10) - projectile.speed}px`;
+      } else if (direction === 'ArrowRight') {
+        if (parseInt(projectile.canvas.style.left, 10) >= window.innerWidth - projectile.canvas.getBoundingClientRect().width) {
+          document.body.removeChild(projectile.canvas);
+          return;
+        }
+        projectile.canvas.style.rotate = '90deg';
+        projectile.canvas.style.left = `${parseInt(projectile.canvas.style.left, 10) + projectile.speed}px`;
+      }
+
+      requestAnimationFrame(move);
+    }
+
+  move();}
+
+
+  detectEnemyCollision(projectile: Projectile) {
+    let enemies = document.getElementsByClassName('enemy');
+    let enemiesArray = Array.from(enemies);
+    let projectileTop = parseInt(projectile.canvas.style.top, 10);
+    let projectileLeft = parseInt(projectile.canvas.style.left, 10);
+    let projectileWidth = projectile.canvas.width;
+    let projectileHeight = projectile.canvas.height;
+
+    enemiesArray.forEach((enemy) => {
+      let enemyTop = parseInt(enemy.style.top, 10);
+      let enemyLeft = parseInt(enemy.style.left, 10);
+      let enemyWidth = enemy.getBoundingClientRect().width;
+      let enemyHeight = enemy.getBoundingClientRect().height;
+
+      if (projectileTop < enemyTop + enemyHeight &&
+          projectileTop + projectileHeight > enemyTop &&
+          projectileLeft < enemyLeft + enemyWidth &&
+          projectileLeft + projectileWidth > enemyLeft) {
+        this.game.score += 1;
+        document.body.removeChild(enemy);
+        document.body.removeChild(projectile.canvas);
+      }
+    })
   }
 }

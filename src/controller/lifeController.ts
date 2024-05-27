@@ -1,10 +1,12 @@
+import {Player} from "../model/playerModel";
+
 export class LifeController{
     lifeImg: string = './src/resources/heart.webp';
     life: number;
     lifeContainer: HTMLElement = document.getElementById('life-container');
 
-    constructor(life: number){
-        this.life = life;
+    constructor(player: Player){
+        this.life = player.life;
         this.renderLife();
     }
 
@@ -16,6 +18,10 @@ export class LifeController{
             img.className = 'life';
             this.lifeContainer.appendChild(img);
         }
+    }
+
+    updateLife(){
+        this.renderLife();
     }
 
 
