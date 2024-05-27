@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>TsSurvivor | Nikoolaii</title>
+    <script defer src="./dist/bundle.js"></script>
+</head>
+
+<body>
+<div id="life-container"></div>
+ <div id="stats-container">
+    <p id="timer">00:00</p>
+    <p id="score">0</p>
+</div>
+
+<div id="startGame">
+    <h1>TsSurvivor</h1>
+    <button id="startButton">Start</button>
+    <p>Use the arrow keys to move</p>
+    <p>Or Z,Q,S,D</p>
+    <p>Press start to begin</p>
+</div>
+
+<div class="hidden" id="endGame">
+    <h1>Game Over</h1>
+    <p>Score: <span id="finalScore">0</span></p>
+    <p>Time: <span id="finalTime">00:00</span></p>
+    <button id="restartButton">Restart</button>
+</div>
+
+</body>
+
+</html>
