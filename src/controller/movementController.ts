@@ -56,6 +56,7 @@ export class MovementController {
     }
 
     addEventListener('keydown', (event) => {
+      console.log(event.key)
       if (this.key.includes(event.key)) {
         direction = event.key;
       }
