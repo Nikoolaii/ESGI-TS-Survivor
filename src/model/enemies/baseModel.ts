@@ -11,8 +11,8 @@ export class BaseEnemy {
         this.sprite = './src/resources/sprite/enemies/enemy1.png';
         this.canvas = <HTMLCanvasElement>document.createElement('canvas');
 
-        this.canvas.width = 16;
-        this.canvas.height = 16;
+        this.canvas.width = 32;
+        this.canvas.height = 32;
 
         this.canvas.className = 'enemy';
         this.canvas.id = 'enemy';
@@ -25,7 +25,7 @@ export class BaseEnemy {
         this.canvas.style.height = '64px';
 
 
-        this.animation = new Animation(this.sprite, this.canvas, 16, 16);
+        this.animation = new Animation(this.sprite, this.canvas, 32, 32);
     }
 
     takeDamage(damage: number) {
